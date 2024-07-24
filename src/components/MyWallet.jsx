@@ -52,6 +52,7 @@ const MyWallet = () => {
       if (inputValue !== "" && inputValue > 0) {
         setBalance(balance + inputValue);
         reset();
+        alert("Nạp tiền thành công");
       } else {
         setLogInput("Số tiền phải lớn hơn 0");
         return;
@@ -60,6 +61,7 @@ const MyWallet = () => {
       if (inputValue !== "" && +inputValue <= balance && +inputValue > 0) {
         setBalance(balance - inputValue);
         reset();
+        alert("Rút tiền thành công");
       } else {
         setLogInput("Số tiền phải nhỏ hơn hoặc bằng số dư");
         return;
