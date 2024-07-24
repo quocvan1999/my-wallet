@@ -7,6 +7,7 @@ const ModalWallet = ({
   handleChangeSubmit,
   handleCloseModal,
   inputValue,
+  showModal,
 }) => {
   const { type, title, inputTitle, inputPlaceholder, buttonTitle } =
     modalContent;
@@ -45,9 +46,9 @@ const ModalWallet = ({
               id="inputAmount"
               name="inputAmount"
               placeholder={inputPlaceholder}
-              value={inputValue}
+              value={inputValue === 0 ? "" : inputValue}
               onChange={(e) => {
-                handleChangeInput(e.target.value);
+                handleChangeInput(e.target.value, type);
               }}
             />
           </div>
@@ -66,7 +67,7 @@ const ModalWallet = ({
               }}
               type="button"
               className="btn btn-primary"
-              data-bs-dismiss="modal"
+              data-bs-dismiss={showModal}
             >
               {buttonTitle}
             </button>

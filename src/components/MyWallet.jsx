@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import HistoryItem from "./HistoryItem";
 import ModalWallet from "./ModalWallet";
+import { Modal } from "bootstrap";
 
 const MyWallet = () => {
   const contentModalDeposit = {
@@ -28,16 +29,17 @@ const MyWallet = () => {
     const ampm = hours >= 12 ? "pm" : "am";
 
     hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
+    hours = hours ? hours : 12;
 
     return `${day} ${month} ${hours}:${minutes}${ampm}`;
   };
 
   const [modalContent, setModalContent] = useState({});
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(0);
   const [balance, setBalance] = useState(0);
   const [logInput, setLogInput] = useState("");
   const [transactionHistory, setTransactionHistory] = useState([]);
+  const [showModal, setShowModal] = useState("");
 
   const handleChangeSubmit = (type) => {
     const newTransaction = {
@@ -47,19 +49,17 @@ const MyWallet = () => {
     };
 
     if (type === 0) {
-      if (inputValue !== "" && inputValue >= 0) {
+      if (inputValue !== "" && inputValue > 0) {
         setBalance(balance + inputValue);
-        setInputValue("");
-        setLogInput("");
+        reset();
       } else {
         setLogInput("Số tiền phải lớn hơn 0");
         return;
       }
     } else {
-      if (inputValue !== "" && inputValue <= balance) {
+      if (inputValue !== "" && +inputValue <= balance && +inputValue > 0) {
         setBalance(balance - inputValue);
-        setInputValue("");
-        setLogInput("");
+        reset();
       } else {
         setLogInput("Số tiền phải nhỏ hơn hoặc bằng số dư");
         return;
@@ -69,18 +69,29 @@ const MyWallet = () => {
   };
 
   const handleCloseModal = () => {
-    setLogInput("");
-    setInputValue("");
+    reset();
   };
 
   const handleOpenModal = (type) => {
-    setInputValue("");
-    setLogInput("");
+    reset();
     setModalContent(type === 0 ? contentModalDeposit : contentModalWithdraw);
   };
 
-  const handleChangeInput = (number) => {
-    setInputValue(+number);
+  const handleChangeInput = (value, type) => {
+    if (type === 0) {
+      value !== "" && +value > 0 ? setShowModal("modal") : setShowModal("");
+    } else {
+      value !== "" && +value > 0 && +value <= balance
+        ? setShowModal("modal")
+        : setShowModal("");
+    }
+    setInputValue(+value);
+  };
+
+  const reset = () => {
+    setShowModal("");
+    setLogInput("");
+    setInputValue("");
   };
 
   return (
@@ -133,6 +144,7 @@ const MyWallet = () => {
         modalContent={modalContent}
         logInput={logInput}
         inputValue={inputValue}
+        showModal={showModal}
       />
     </div>
   );
